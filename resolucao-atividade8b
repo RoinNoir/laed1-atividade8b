@@ -1,0 +1,50 @@
+/*
+ * EXERCÍCIO 2: Reaproveitando o módulo entidade em outro programa
+ * ---------------------------------------------------------------
+ * Cria 3 entidades de tipos diferentes e apenas as desenha na tela,
+ * demonstrando que o módulo entidade.h/entidade.c pode ser usado por
+ * qualquer programa sem reescrever nenhuma linha de código dele.
+ *
+ * Compilar (Linux, com raylib):
+ *   gcc atividade8b.c entidade.c -o atividade8b -lraylib -lm -lpthread -ldl -lrt -lX11
+ */
+
+#include "raylib.h"
+#include "entidade.h"
+#include <stdlib.h>
+
+#define LARGURA_JANELA 800
+#define ALTURA_JANELA  600
+
+int main(void) {
+    InitWindow(LARGURA_JANELA, ALTURA_JANELA, "Atividade 8b - Reuso do Modulo Entidade");
+    SetTargetFPS(60);
+
+    // Criando três entidades de tipos diferentes usando o módulo
+    Entidade *jogador = entidadeCriar(ENTIDADE_JOGADOR, (Vector2){ 200.0f, 300.0f });
+    Entidade *inimigo = entidadeCriar(ENTIDADE_INIMIGO, (Vector2){ 400.0f, 300.0f });
+    Entidade *item    = entidadeCriar(ENTIDADE_ITEM,    (Vector2){ 600.0f, 300.0f });
+
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+            ClearBackground(RAYWHITE);
+
+            // Desenstando as entidades na tela utilizando as funções do módulo
+            entidadeDesenhar(jogador);
+            entidadeDesenhar(inimigo);
+            entidadeDesenhar(item);
+
+            DrawText("Programa secundario reaproveitando entidade.h / entidade.c", 10, 10, 20, DARKGRAY);
+            DrawText("Pressione ESC para sair", 10, ALTURA_JANELA - 25, 16, GRAY);
+
+        EndDrawing();
+    }
+
+    // Liberando a memória alocada dinamicamente para cada entidade
+    free(jogador);
+    free(inimigo);
+    free(item);
+
+    CloseWindow();
+    return 0;
+}
